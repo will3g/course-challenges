@@ -1,6 +1,6 @@
 # Golang in docker image with 1.86 mb
 
-<iframe src="https://drive.google.com/file/d/19mr1Yk9KyG99-1sYbQdYtcJCqAOgfLwV/preview" width="640" height="480" allow="autoplay"></iframe>
+![golang-with-1-86-mb](https://i.imgur.com/bGIsQ3F.png)
 
 ## I used this commands to generate go.mod into docker container, without golang in my local machine
 
