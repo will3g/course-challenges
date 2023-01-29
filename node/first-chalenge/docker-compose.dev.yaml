@@ -1,0 +1,54 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:5.7
+    command: --innodb-use-native-aio=0    # necessary command to start mysql db
+    container_name: db_course_chalenges_mysql
+    restart: on-failure                   # restart the container when down
+    tty: true                             # active interactive mode
+    volumes:                              # link the local directory with a container directory
+      - ./mysql:/var/lib/mysql            # local:container
+    environment:
+      - MYSQL_DATABASE=db_course_chalenges_mysql
+      - MYSQL_ROOT_PASSWORD=root
+      # - MYSQL_USER=user                 # create an user on mysql, user default is root
+    networks:
+      - node-network
+
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile.dev
+    container_name: app_course_node
+    restart: on-failure
+    volumes:                                # link the local directory with a container directory
+      - ./app:/usr/src/app                  # local:container
+    tty: true
+    networks:
+      - node-network
+    depends_on:                             # depends_on not wait db container started. So, you do install a dockerize lib in your node dockerfile (https://github.com/jwilder/dockerize)
+      - db
+    # dockerize wait the db container for 50s
+    entrypoint: dockerize -wait tcp://db:3306 -timeout 50s docker-entrypoint.sh npm start
+    ports:
+      - "3000:3000"
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.dev
+    restart: on-failure
+    container_name: nginx_course_node
+    tty: true
+    networks:
+      - node-network
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+      - db
+
+networks:
+  node-network:
+    driver: bridge
