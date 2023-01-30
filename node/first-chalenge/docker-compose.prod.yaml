@@ -23,7 +23,8 @@ services:
     container_name: app_course_node
     restart: on-failure
     volumes:                                # link the local directory with a container directory
-      - ./app:/usr/src/app                  # local:container
+      # - ./app:/usr/src/app                  # local:container
+      - /usr/src/app/node_modules           # local:container
     tty: true
     networks:
       - node-network
